@@ -36,7 +36,7 @@
 				<br>
 
 				<el-card>
-					<div slot="header">测速图</div>
+					<div slot="header">测速数据</div>
 					<el-container>
 						<el-table :data="result" :cell-style="colorCell" size="small" ref="result">
 							<el-table-column label="Group" align="center" prop="group" width="300" sortable>
@@ -60,7 +60,7 @@
 				<br>
 				
 				<el-card v-if="picdata.length">
-					<div slot="header">导出图片</div>
+					<div slot="header">测速图片</div>
 					<el-container>
 						<el-image :src="picdata" fit="true" placeholder="未加载图片"></el-image>
 					</el-container>
