@@ -17,58 +17,16 @@
 		<el-row>
 			<el-col :span="22" :offset="1">
 				<el-card>
-					<div slot="header">订阅信息</div>
+					<div slot="header">Mtest</div>
 					<el-container :element-loading-text="loadingContent">
 						<el-form label-width="120px">
 							<el-row>
-								<el-form-item label="模式设置：">
-									<el-radio-group v-model="option" :disabled="loading">
-									<el-radio :label="0">基础模式</el-radio>
-									<el-radio :label="1">进阶模式</el-radio>
-									</el-radio-group>
+								<el-form-item label="节点/订阅：">
+									<el-input v-model="subscription" style="width: 800px" size="small" @keyup.enter.native="submit" placeholder="请将节点/订阅粘贴到此处" :disabled="loading||upload"></el-input>
 								</el-form-item>
-
-								<el-form-item label="订阅链接：">
-									<el-input v-model="subscription" style="width: 800px" size="small" @keyup.enter.native="submit" placeholder="支持 SSR/SSD/V2Ray 订阅链接及节点链接单独测速" :disabled="loading||upload"></el-input>
-									<el-upload :drag="checkUploadStatus('drag')" :v-if="checkUploadStatus('if')" action="" :show-file-list="false" ref="upload" :http-request="handleFileChange" :auto-upload="true" :before-upload="beforeUpload">
-										<i class="el-icon-upload" v-if="!subscription.length"></i>
-										<!--<el-button slot="trigger" type="primary" icon="el-icon-files" :disabled="loading" v-if="!upload">选择配置文件</el-button>-->
-										<el-button slot="tip" type="danger" icon="el-icon-close" :disabled="loading" v-if="upload" @click="cancelFileUpload">取消文件选择</el-button>
-										<div class="el-upload__text" v-if="!subscription.length">还可以将配置文件拖到此处，或<em>点击上传</em></div>
-									</el-upload>
-								</el-form-item>
-								<el-form-item label="自定义组名：">
-									<el-input v-model="groupname" style="width: 215px" size="small" @keyup.enter.native="submit" :disabled="loading"></el-input>
-									<el-button type="primary" @click="submit" style="margin-left: 20px" v-if="!option" icon="el-icon-check" :disabled="loading" :loading="loading">提 交</el-button>
-									<el-button type="danger" @click="terminate" icon="el-icon-close" v-if="!option" :disabled="!loading">终 止</el-button>
-								</el-form-item>
-
-								<el-form-item label="测试项：" v-if="option" :disabled="loading">
-									<el-select v-model="speedtestMode" size="small">
-										<el-option v-for="(item, key, index) in init.speedtestModes" :key="index" :label="item"
-											:value="key">
-										</el-option>
-									</el-select>
-								</el-form-item>
-								<el-form-item label="Ping方式：" v-if="option" :disabled="loading">
-									<el-select v-model="pingMethod" size="small">
-										<el-option v-for="(item, key, index) in init.pingMethods" :key="index" :label="item" :value="key">
-										</el-option>
-									</el-select>
-								</el-form-item>
-								<el-form-item label="排序方式：" v-if="option" :disabled="loading">
-									<el-select v-model="sortMethod" size="small">
-										<el-option v-for="(item, key, index) in init.sortMethods" :key="index" :label="item" :value="key">
-										</el-option>
-									</el-select>
-								</el-form-item>
-								<el-form-item label="导出速度峰值：" v-if="option" :disabled="loading">
-									<el-select v-model="exportMaxSpeed" size="small">
-										<el-option key="0" label="否" :value="false"></el-option>
-										<el-option key="1" label="是" :value="true"></el-option>
-									</el-select>
-									<el-button type="primary" @click="submit" style="margin-left: 20px" icon="el-icon-check" :disabled="loading" :loading="loading">提 交</el-button>
-									<el-button type="danger" @click="terminate" icon="el-icon-close" :disabled="!loading">终 止</el-button>
+								<el-form-item>
+									<el-button type="primary" @click="submit" style="margin-left: 20px" icon="el-icon-check" :disabled="loading" :loading="loading">Start</el-button>
+									<el-button type="danger" @click="terminate" icon="el-icon-close" :disabled="!loading">Cancel</el-button>
 								</el-form-item>
 							</el-row>
 						</el-form>
@@ -76,25 +34,9 @@
 				</el-card>
 
 				<br>
-		<!--
+
 				<el-card>
-					<div slot="header">操作</div>
-					<el-container>
-						<el-form :inline="true">
-							<el-form-item>
-								<el-button type="primary" @click="submit">提交</el-button>
-							</el-form-item>
-							<el-form-item>
-								<el-button type="secondary">终止</el-button>
-							</el-form-item>
-						</el-form>
-					</el-container>
-				</el-card>
-				
-				<br>
-				-->
-				<el-card>
-					<div slot="header">结果</div>
+					<div slot="header">测速图</div>
 					<el-container>
 						<el-table :data="result" :cell-style="colorCell" size="small" ref="result">
 							<el-table-column label="Group" align="center" prop="group" width="300" sortable>
@@ -144,39 +86,30 @@
 			el: "#app",
 			data() {
 			return {
-				title: "Stair Speedtest Web GUI",
+				title: "StairSpeedtest-MLC1158",
 				upload: false,
 				filecontent: "",
 				loading: false,
 				subscription: "",
-				groupname: "",
+				groupname: "MLC1158的测速",
 				loadingContent: "",
 				speedtestMode: "all",
 				pingMethod: "tcping",
 				sortMethod: "none",
-				exportMaxSpeed: false,
+				exportMaxSpeed: true,
 				method: "SOCKET",
 				picdata: "",
-				option: 0,
+				option: 1,
 
 				init: {
 					speedtestModes: {
-						all: "全部",
-						speedonly: "Speed only",
-						pingonly: "Ping only"
+						all: "全部"
 					},
 					pingMethods: {
-						tcping: "TCP",
-						googleping: "Google",
-						gstaticping: "Gstatic",
-						bingping: "Bing"
+						tcping: "TCP"
 					},
 					sortMethods: {
 						none: "订阅列表",
-						speed: "speed 顺序",
-						rspeed: "speed 倒序",
-						ping: "ping 顺序",
-						rping: "ping 倒序"
 					}
 				},
 				result: []
