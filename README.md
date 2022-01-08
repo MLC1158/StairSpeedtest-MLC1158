@@ -75,4 +75,5 @@ Supported proxy types:
 ## TODO
 * Nothing yet
 
-Telegram: https://t.me/mlc1158
+## Telegram
+[MLC1158 固态存储颗粒|失联中...](https://t.me/mlc1158)
