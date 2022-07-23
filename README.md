@@ -76,4 +76,4 @@ Supported proxy types:
 * Nothing yet
 
 ## Telegram
-[MLC1158 固态存储颗粒|失联中...](https://t.me/mlc1158)
+[MLC1158](https://t.me/mlc1158)
